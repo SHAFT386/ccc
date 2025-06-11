@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaft Foods - Takeaway Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding-bottom: 80px;
+        }
+
+        .hero-section {
+            display: flex;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+
+        .hero-left {
+            flex: 1;
+            background-image: url('hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .hero-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-left h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .hero-left p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            max-width: 500px;
+        }
+
+        .order-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        .hero-right {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin: 20px 0 40px;
+            color: #25D366;
+            font-size: 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .product-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            height: 40px;
+            overflow: hidden;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: #25D366;
+            font-size: 18px;
+        }
+
+        .add-to-cart {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity {
+            margin: 0 10px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .add-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cart-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .cart-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .cart-modal {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            max-height: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+            z-index: 101;
+        }
+
+        .cart-modal.show {
+            display: block;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-title {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #25D366;
+            font-weight: 600;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-quantity-btn {
+            width: 25px;
+            height: 25px;
+            background-color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .cart-quantity {
+            margin: 0 10px;
+            width: 30px;
+            text-align: center;
+        }
+
+        .remove-item {
+            color: #ff4444;
+            background: none;
+            border: none;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .cart-total {
+            font-weight: 600;
+            font-size: 18px;
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #25D366;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkout-btn i {
+            margin-right: 10px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 992px) {
+            .hero-section {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .hero-left, .hero-right {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .cart-modal {
+                width: 300px;
+                right: 10px;
+            }
+            
+            .hero-left h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-left p {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-card {
+                display: flex;
+            }
+
+            .product-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .cart-modal {
+                width: calc(100% - 20px);
+                right: 10px;
+                left: 10px;
+            }
+            
+            .hero-left, .hero-right {
+                height: 250px;
+            }
+            
+            .hero-left h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-left">
+            <div class="hero-content">
+                <h1>Shaft Foods</h1>
+                <p>Delicious meals prepared with love and served with excellence. Order your favorite dish today!</p>
+                <button class="order-btn" id="scroll-to-menu">View Menu</button>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="slider">
+                <div class="slide active" style="background-image: url('slide1.jpg');"></div>
+                <div class="slide" style="background-image: url('slide2.jpg');"></div>
+                <div class="slide" style="background-image: url('slide3.jpg');"></div>
+                <div class="slide" style="background-image: url('slide4.jpg');"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Our Menu</h2>
+        
+        <div class="products-grid" id="products-grid">
+            <!-- Products will be inserted here by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Shopping Cart -->
+    <div class="cart-container">
+        <button class="cart-btn" id="cart-btn">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cart-count">0</span>
+        </button>
+        
+        <div class="cart-modal" id="cart-modal">
+            <div class="cart-header">
+                <div class="cart-title">Your Order</div>
+                <button class="close-cart" id="close-cart">&times;</button>
+            </div>
+            
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be inserted here -->
+                <div class="empty-cart">Your cart is empty</div>
+            </div>
+            
+            <div class="cart-total" id="cart-total">Total: UGX 0</div>
+            <button class="checkout-btn" id="checkout-btn">
+                <i class="fab fa-whatsapp"></i> Order via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sample product data (50 items)
+        const products = [
+            {
+                id: 1,
+                name: "Chicken Tikka Masala",
+                description: "Tender chicken pieces in a creamy tomato sauce with aromatic spices.",
+                price: 15000,
+                image: "1 (1).jpg"
+            },
+            {
+                id: 2,
+                name: "Beef Burger",
+                description: "Juicy beef patty with lettuce, tomato, and special sauce in a sesame bun.",
+                price: 12000,
+                image: "1 (2).jpg"
+            },
+            {
+                id: 3,
+                name: "Vegetable Pizza",
+                description: "Thin crust pizza topped with fresh vegetables and mozzarella cheese.",
+                price: 18000,
+                image: "1 (3).jpg"
+            },
+            {
+                id: 4,
+                name: "Grilled Tilapia",
+                description: "Fresh tilapia fish grilled to perfection with lemon and herbs.",
+                price: 20000,
+                image: "1 (4).jpg"
+            },
+            {
+                id: 5,
+                name: "Chicken Wings",
+                description: "Crispy fried chicken wings with your choice of sauce (hot, BBQ, or garlic).",
+                price: 14000,
+                image: "1 (5).jpg"
+            },
+            {
+                id: 6,
+                name: "Beef Shawarma",
+                description: "Marinated beef slices wrapped in pita bread with garlic sauce and veggies.",
+                price: 13000,
+                image: "1 (6).jpg"
+            },
+            {
+                id: 7,
+                name: "Vegetable Fried Rice",
+                description: "Fragrant rice stir-fried with mixed vegetables and egg.",
+                price: 10000,
+                image: "1 (7).jpg"
+            },
+            {
+                id: 8,
+                name: "Pork Ribs",
+                description: "Slow-cooked pork ribs with BBQ glaze, served with coleslaw.",
+                price: 22000,
+                image: "1 (8).jpg"
+            },
+            {
+                id: 9,
+                name: "Chicken Biryani",
+                description: "Fragrant basmati rice cooked with chicken and aromatic spices.",
+                price: 16000,
+                image: "1 (9).jpg"
+            },
+            {
+                id: 10,
+                name: "Fish and Chips",
+                description: "Beer-battered fish fillet with crispy french fries and tartar sauce.",
+                price: 17000,
+                image: "1 (10).jpg"
+            },
+            {
+                id: 11,
+                name: "Beef Steak",
+                description: "Tender beef steak cooked to your liking with mashed potatoes.",
+                price: 25000,
+                image: "1 (11).jpg"
+            },
+            {
+                id: 12,
+                name: "Vegetable Lasagna",
+                description: "Layers of pasta, vegetables, and cheese in rich tomato sauce.",
+                price: 15000,
+                image: "1 (12).jpg"
+            },
+            {
+                id: 13,
+                name: "Grilled Chicken",
+                description: "Juicy grilled chicken breast with roasted vegetables.",
+                price: 14000,
+                image: "1 (13).jpg"
+            },
+            {
+                id: 14,
+                name: "Mushroom Risotto",
+                description: "Creamy Italian rice dish with wild mushrooms and parmesan.",
+                price: 16000,
+                image: "1 (14).jpg"
+            },
+            {
+                id: 15,
+                name: "Lamb Curry",
+                description: "Tender lamb pieces in rich, spiced curry sauce.",
+                price: 22000,
+                image: "1 (15).jpg"
+            },
+            {
+                id: 16,
+                name: "Chicken Caesar Salad",
+                description: "Fresh romaine lettuce with grilled chicken, croutons, and Caesar dressing.",
+                price: 12000,
+                image: "1 (16).jpg"
+            },
+            {
+                id: 17,
+                name: "Beef Tacos",
+                description: "Three soft tortillas filled with seasoned beef, salsa, and guacamole.",
+                price: 15000,
+                image: "1 (17).jpg"
+            },
+            {
+                id: 18,
+                name: "Vegetable Stir Fry",
+                description: "Mixed vegetables stir-fried in garlic sauce with tofu.",
+                price: 11000,
+                image: "1 (18).jpg"
+            },
+            {
+                id: 19,
+                name: "Pork Chop",
+                description: "Grilled pork chop with apple sauce and roasted potatoes.",
+                price: 18000,
+                image: "1 (19).jpg"
+            },
+            {
+                id: 20,
+                name: "Chicken Wrap",
+                description: "Grilled chicken, lettuce, and mayo wrapped in a soft tortilla.",
+                price: 10000,
+                image: "1 (20).jpg"
+            },
+            {
+                id: 21,
+                name: "Beef Nachos",
+                description: "Crispy tortilla chips topped with beef, cheese, and jalapeños.",
+                price: 14000,
+                image: "1 (21).jpg"
+            },
+            {
+                id: 22,
+                name: "Vegetable Soup",
+                description: "Hearty soup made with seasonal vegetables and herbs.",
+                price: 8000,
+                image: "1 (22).jpg"
+            },
+            {
+                id: 23,
+                name: "Grilled Salmon",
+                description: "Fresh salmon fillet grilled with lemon and dill.",
+                price: 24000,
+                image: "1 (23).jpg"
+            },
+            {
+                id: 24,
+                name: "Chicken Pasta",
+                description: "Penne pasta with chicken in creamy Alfredo sauce.",
+                price: 15000,
+                image: "1 (24).jpg"
+            },
+            {
+                id: 25,
+                name: "Beef Sandwich",
+                description: "Sliced roast beef with horseradish on crusty bread.",
+                price: 12000,
+                image: "1 (25).jpg"
+            },
+            {
+                id: 26,
+                name: "Vegetable Curry",
+                description: "Mixed vegetables in aromatic coconut curry sauce.",
+                price: 11000,
+                image: "1 (26).jpg"
+            },
+            {
+                id: 27,
+                name: "Pork Belly",
+                description: "Crispy pork belly with sweet chili glaze.",
+                price: 20000,
+                image: "1 (27).jpg"
+            },
+            {
+                id: 28,
+                name: "Chicken Skewers",
+                description: "Marinated chicken pieces grilled on skewers.",
+                price: 13000,
+                image: "1 (28).jpg"
+            },
+            {
+                id: 29,
+                name: "Beef Meatballs",
+                description: "Homemade beef meatballs in tomato sauce.",
+                price: 15000,
+                image: "1 (29).jpg"
+            },
+            {
+                id: 30,
+                name: "Vegetable Pizza",
+                description: "Thin crust pizza with fresh vegetables and mozzarella.",
+                price: 18000,
+                image: "1 (30).jpg"
+            },
+            {
+                id: 31,
+                name: "Grilled Prawns",
+                description: "Jumbo prawns grilled with garlic butter.",
+                price: 25000,
+                image: "1 (31).jpg"
+            },
+            {
+                id: 32,
+                name: "Chicken Quesadilla",
+                description: "Flour tortilla filled with chicken and melted cheese.",
+                price: 14000,
+                image: "1 (32).jpg"
+            },
+            {
+                id: 33,
+                name: "Beef Stir Fry",
+                description: "Tender beef strips with vegetables in oyster sauce.",
+                price: 16000,
+                image: "1 (33).jpg"
+            },
+            {
+                id: 34,
+                name: "Vegetable Samosa",
+                description: "Crispy pastry filled with spiced vegetables.",
+                price: 5000,
+                image: "1 (34).jpg"
+            },
+            {
+                id: 35,
+                name: "Pork Sausages",
+                description: "Grilled pork sausages with mustard and sauerkraut.",
+                price: 15000,
+                image: "1 (35).jpg"
+            },
+            {
+                id: 36,
+                name: "Chicken Nuggets",
+                description: "Crispy breaded chicken nuggets with dipping sauce.",
+                price: 11000,
+                image: "1 (36).jpg"
+            },
+            {
+                id: 37,
+                name: "Beef Kebabs",
+                description: "Marinated beef cubes grilled on skewers.",
+                price: 18000,
+                image: "1 (37).jpg"
+            },
+            {
+                id: 38,
+                name: "Vegetable Pakora",
+                description: "Spiced vegetable fritters served with mint chutney.",
+                price: 7000,
+                image: "1 (38).jpg"
+            },
+            {
+                id: 39,
+                name: "Grilled Duck",
+                description: "Tender duck breast with orange glaze.",
+                price: 28000,
+                image: "1 (39).jpg"
+            },
+            {
+                id: 40,
+                name: "Chicken Pie",
+                description: "Flaky pastry filled with creamy chicken and vegetables.",
+                price: 12000,
+                image: "1 (40).jpg"
+            },
+            {
+                id: 41,
+                name: "Beef Burger",
+                description: "Juicy beef patty with cheese, lettuce, and tomato.",
+                price: 14000,
+                image: "1 (41).jpg"
+            },
+            {
+                id: 42,
+                name: "Vegetable Tempura",
+                description: "Lightly battered and fried seasonal vegetables.",
+                price: 13000,
+                image: "1 (42).jpg"
+            },
+            {
+                id: 43,
+                name: "Pork Dumplings",
+                description: "Steamed dumplings filled with seasoned pork.",
+                price: 12000,
+                image: "1 (43).jpg"
+            },
+            {
+                id: 44,
+                name: "Chicken Satay",
+                description: "Grilled chicken skewers with peanut sauce.",
+                price: 15000,
+                image: "1 (44).jpg"
+            },
+            {
+                id: 45,
+                name: "Beef Wellington",
+                description: "Beef tenderloin wrapped in puff pastry.",
+                price: 30000,
+                image: "1 (45).jpg"
+            },
+            {
+                id: 46,
+                name: "Vegetable Frittata",
+                description: "Italian-style omelet with mixed vegetables.",
+                price: 11000,
+                image: "1 (46).jpg"
+            },
+            {
+                id: 47,
+                name: "Grilled Octopus",
+                description: "Tender octopus with lemon and olive oil.",
+                price: 26000,
+                image: "1 (47).jpg"
+            },
+            {
+                id: 48,
+                name: "Chicken Curry",
+                description: "Chicken pieces in aromatic curry sauce.",
+                price: 15000,
+                image: "1 (48).jpg"
+            },
+            {
+                id: 49,
+                name: "Beef Stew",
+                description: "Hearty beef stew with carrots and potatoes.",
+                price: 17000,
+                image: "1 (49).jpg"
+            },
+            {
+                id: 50,
+                name: "Vegetable Burger",
+                description: "Plant-based burger patty with all the fixings.",
+                price: 13000,
+                image: "1 (50).jpg"
+            }
+        ];
+
+        // Shopping cart functionality
+        let cart = [];
+
+        // DOM elements
+        const productsGrid = document.getElementById('products-grid');
+        const cartBtn = document.getElementById('cart-btn');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCart = document.getElementById('close-cart');
+        const cartItems = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+        const cartTotal = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const scrollToMenuBtn = document.getElementById('scroll-to-menu');
+
+        // Image slider functionality
+        function initSlider() {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            
+            function nextSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+            
+            setInterval(nextSlide, 3000); // Change slide every 3 seconds
+        }
+
+        // Display products
+        function displayProducts() {
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-desc">${product.description}</div>
+                        <div class="product-price">UGX ${product.price.toLocaleString()}</div>
+                        <div class="add-to-cart">
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" data-id="${product.id}">-</button>
+                                <span class="quantity" data-id="${product.id}">0</span>
+                                <button class="quantity-btn plus" data-id="${product.id}">+</button>
+                            </div>
+                            <button class="add-btn" data-id="${product.id}">Add</button>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+            
+            // Add event listeners to all buttons
+            document.querySelectorAll('.plus').forEach(btn => {
+                btn.addEventListener('click', increaseQuantity);
+            });
+            
+            document.querySelectorAll('.minus').forEach(btn => {
+                btn.addEventListener('click', decreaseQuantity);
+            });
+            
+            document.querySelectorAll('.add-btn').forEach(btn => {
+                btn.addEventListener('click', addToCart);
+            });
+        }
+
+        // Increase quantity
+        function increaseQuantity(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            const quantityElement = document.querySelector(`.quantity[data-id="${productId}"]`);
+            let quantity = parseInt(quantityElement.textContent);
+            quantityElement.textContent = quantity + 1;
+        }
+
+        // Decrease quantity
+        function decreaseQuantity(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            const quantityElement = document.querySelector(`.quantity[data-id="${productId}"]`);
+            let quantity = parseInt(quantityElement.textContent);
+            if (quantity > 0) {
+                quantityElement.textContent = quantity - 1;
+            }
+        }
+
+        // Add to cart
+        function addToCart(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            const quantityElement = document.querySelector(`.quantity[data-id="${productId}"]`);
+            const quantity = parseInt(quantityElement.textContent);
+            
+            if (quantity > 0) {
+                const product = products.find(p => p.id === productId);
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        quantity: quantity,
+                        image: product.image
+                    });
+                }
+                
+                // Reset quantity display
+                quantityElement.textContent = '0';
+                
+                // Update cart
+                updateCart();
+                
+                // Show cart modal
+                cartModal.classList.add('show');
+            }
+        }
+
+        // Update cart display
+        function updateCart() {
+            // Update cart count
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Update cart items
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart">Your cart is empty</div>';
+            } else {
+                cartItems.innerHTML = '';
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" style="width:50px;height:50px;object-fit:cover;border-radius:5px;">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">UGX ${item.price.toLocaleString()}</div>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <button class="cart-quantity-btn minus" data-id="${item.id}">-</button>
+                            <span class="cart-quantity" data-id="${item.id}">${item.quantity}</span>
+                            <button class="cart-quantity-btn plus" data-id="${item.id}">+</button>
+                        </div>
+                        <button class="remove-item" data-id="${item.id}">&times;</button>
+                    `;
+                    cartItems.appendChild(cartItem);
+                });
+            }
+            
+            // Update total
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartTotal.textContent = `Total: UGX ${total.toLocaleString()}`;
+            
+            // Add event listeners to cart buttons
+            document.querySelectorAll('.cart-item-quantity .plus').forEach(btn => {
+                btn.addEventListener('click', cartIncreaseQuantity);
+            });
+            
+            document.querySelectorAll('.cart-item-quantity .minus').forEach(btn => {
+                btn.addEventListener('click', cartDecreaseQuantity);
+            });
+            
+            document.querySelectorAll('.remove-item').forEach(btn => {
+                btn.addEventListener('click', removeFromCart);
+            });
+        }
+
+        // Cart increase quantity
+        function cartIncreaseQuantity(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            const item = cart.find(item => item.id === productId);
+            item.quantity += 1;
+            updateCart();
+        }
+
+        // Cart decrease quantity
+        function cartDecreaseQuantity(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            const item = cart.find(item => item.id === productId);
+            if (item.quantity > 1) {
+                item.quantity -= 1;
+            } else {
+                cart = cart.filter(item => item.id !== productId);
+            }
+            updateCart();
+        }
+
+        // Remove from cart
+        function removeFromCart(e) {
+            const productId = parseInt(e.target.getAttribute('data-id'));
+            cart = cart.filter(item => item.id !== productId);
+            updateCart();
+        }
+
+        // Checkout via WhatsApp
+        function checkout() {
+            if (cart.length === 0) return;
+            
+            let message = "Hello Shaft Foods! I'd like to order:\n\n";
+            
+            cart.forEach(item => {
+                message += `${item.name} x ${item.quantity} - UGX ${(item.price * item.quantity).toLocaleString()}\n`;
+            });
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            message += `\nTotal: UGX ${total.toLocaleString()}\n\n`;
+            message += "Please confirm my order. Thank you!";
+            
+            const phoneNumber = "256709835204";
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Scroll to menu
+        function scrollToMenu() {
+            document.querySelector('.section-title').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listeners
+        cartBtn.addEventListener('click', () => {
+            cartModal.classList.toggle('show');
+        });
+
+        closeCart.addEventListener('click', () => {
+            cartModal.classList.remove('show');
+        });
+
+        checkoutBtn.addEventListener('click', checkout);
+        
+        scrollToMenuBtn.addEventListener('click', scrollToMenu);
+
+        // Initialize
+        displayProducts();
+        initSlider();
+    </script>
+</body>
+</html>
