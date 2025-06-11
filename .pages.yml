@@ -1,0 +1,96 @@
+{
+  "name": "Shaft Foods CMS",
+  "description": "Content management for Shaft Foods online menu",
+  "repo": "your-github-username/shaft-foods-repo",
+  "branch": "main",
+  "content": {
+    "products": {
+      "type": "collection",
+      "label": "Menu Products",
+      "fields": [
+        {
+          "name": "id",
+          "type": "number",
+          "label": "Product ID",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Product Name",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "textarea",
+          "label": "Description",
+          "required": true
+        },
+        {
+          "name": "price",
+          "type": "number",
+          "label": "Price (UGX)",
+          "required": true
+        },
+        {
+          "name": "image",
+          "type": "image",
+          "label": "Product Image",
+          "required": true,
+          "destination": "images/products/"
+        },
+        {
+          "name": "category",
+          "type": "select",
+          "label": "Category",
+          "options": [
+            "Starters",
+            "Main Courses",
+            "Desserts",
+            "Drinks",
+            "Specials"
+          ],
+          "required": true
+        }
+      ]
+    },
+    "hero": {
+      "type": "object",
+      "label": "Hero Section",
+      "fields": [
+        {
+          "name": "title",
+          "type": "text",
+          "label": "Hero Title",
+          "default": "Shaft Foods"
+        },
+        {
+          "name": "subtitle",
+          "type": "text",
+          "label": "Hero Subtitle",
+          "default": "Delicious meals prepared with love"
+        },
+        {
+          "name": "background_image",
+          "type": "image",
+          "label": "Background Image",
+          "destination": "images/hero/"
+        },
+        {
+          "name": "slides",
+          "type": "array",
+          "label": "Slider Images",
+          "item": {
+            "type": "image",
+            "destination": "images/slides/"
+          },
+          "max": 4
+        }
+      ]
+    }
+  },
+  "hooks": {
+    "pre-commit": "npm run build",
+    "post-commit": "npm run deploy"
+  }
+}
